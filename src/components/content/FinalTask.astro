@@ -1,0 +1,64 @@
+---
+/**
+ * Кінцеве завдання роботи. MDX:
+ *   <FinalTask title="Визначте матеріал невідомого діода «X»">
+ *   1. …
+ *   </FinalTask>
+ */
+interface Props {
+  title: string;
+}
+const { title } = Astro.props;
+---
+
+<section class="task">
+  <div class="task__stamp" aria-hidden="true">ЗАВДАННЯ</div>
+  <p class="task__kicker">Кінцеве завдання</p>
+  <p class="task__title">{title}</p>
+  <div class="task__body"><slot /></div>
+</section>
+
+<style>
+  .task {
+    position: relative;
+    margin: 1.4em 0;
+    padding: 22px 24px 18px;
+    background: var(--card);
+    border: 2px solid var(--ink);
+    border-radius: 4px;
+    box-shadow: 6px 6px 0 var(--accent);
+    overflow: hidden;
+  }
+  .task__stamp {
+    position: absolute;
+    right: -6px;
+    top: 14px;
+    transform: rotate(8deg);
+    border: 3px double var(--accent);
+    color: var(--accent);
+    padding: 2px 10px;
+    font: 800 0.78rem/1.2 var(--font-display);
+    letter-spacing: 0.18em;
+    opacity: 0.55;
+  }
+  .task__kicker {
+    margin: 0;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent-2);
+  }
+  .task__title {
+    margin: 4px 0 8px;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 1.15rem;
+    color: var(--ink);
+    padding-right: 110px;
+  }
+  .task__body :global(li),
+  .task__body :global(p) {
+    color: var(--ink-2);
+  }
+</style>

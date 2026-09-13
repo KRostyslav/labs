@@ -1,0 +1,53 @@
+---
+/**
+ * Ключове визначення. Використання в MDX:
+ *   <Definition term="p–n-перехід">Межа між областями p- і n-типу…</Definition>
+ */
+interface Props {
+  term: string;
+  /** Англійський відповідник (необов'язково). */
+  en?: string;
+}
+const { term, en } = Astro.props;
+---
+
+<div class="def">
+  <p class="def__term"><dfn>{term}</dfn>{en && <span class="def__en">{en}</span>}</p>
+  <div class="def__body"><slot /></div>
+</div>
+
+<style>
+  .def {
+    max-width: var(--prose-w);
+    margin: 1em 0;
+    padding: 12px 18px 12px 16px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-left: 5px solid var(--blue);
+    border-radius: 4px var(--radius-sm) var(--radius-sm) 4px;
+  }
+  .def__term {
+    margin: 0 0 4px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 4px 10px;
+  }
+  dfn {
+    font-style: normal;
+    font-weight: 800;
+    color: var(--blue-2);
+    font-size: 1.02rem;
+  }
+  .def__en {
+    font-size: 0.8rem;
+    color: var(--ink-3);
+    font-style: italic;
+  }
+  .def__body :global(p) {
+    margin: 0.3em 0;
+  }
+  .def__body {
+    color: var(--ink-2);
+  }
+</style>

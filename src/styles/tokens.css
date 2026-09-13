@@ -1,0 +1,61 @@
+/*
+ * Дизайн-токени — усі кольори, шрифти й розміри сайту в одному місці.
+ * Концепція: «лабораторний журнал + інженерне креслення»:
+ *   тепле паперове тло з сіткою, креслярський синій для схем і посилань,
+ *   сигнальний помаранчевий для акцентів, прилади — темний бакеліт з кремовими шкалами.
+ */
+:root {
+  /* Папір і текст */
+  --paper: #f4f0e6;
+  --paper-2: #ebe5d6;
+  --card: #fffdf7;
+  --ink: #18212f;
+  --ink-2: #3b4555;
+  --ink-3: #6a7280;
+  --line: #d8d0bd;
+  --line-strong: #bdb39c;
+  --grid: rgba(31, 78, 156, 0.065);
+
+  /* Акценти */
+  --blue: #1f4e9c;
+  --blue-2: #173c7a;
+  --blue-soft: #e2eaf6;
+  --accent: #e0531a;
+  --accent-2: #b93f0d;
+  --accent-soft: #fbe5d9;
+  --ok: #2a7548;
+  --ok-soft: #dff0e4;
+  --warn: #a8700f;
+  --warn-soft: #fbefd2;
+  --danger: #bb3326;
+  --danger-soft: #f8dfda;
+
+  /* Прилади */
+  --bakelite: #24282e;
+  --bakelite-2: #343941;
+  --bakelite-3: #4a5059;
+  --dial: #f6f0db;
+  --dial-ink: #1c1c1a;
+  --lcd: #b5c29c;
+  --lcd-2: #a3b28a;
+  --lcd-ink: #1a2313;
+
+  /* Міліметрівка для графіків */
+  --mm-major: rgba(206, 88, 48, 0.42);
+  --mm-mid: rgba(206, 88, 48, 0.22);
+  --mm-minor: rgba(206, 88, 48, 0.1);
+
+  /* Шрифти (усі з кирилицею; підключені локально через @fontsource) */
+  --font-display: 'Unbounded Variable', 'Arial Black', sans-serif;
+  --font-body: 'Onest Variable', 'Segoe UI', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono Variable', Consolas, 'Courier New', monospace;
+
+  /* Розміри */
+  --radius: 12px;
+  --radius-sm: 7px;
+  --shadow: 0 1px 0 rgba(24, 33, 47, 0.04), 0 10px 28px -14px rgba(24, 33, 47, 0.28);
+  --shadow-lg: 0 2px 0 rgba(24, 33, 47, 0.05), 0 22px 48px -22px rgba(24, 33, 47, 0.4);
+  --maxw: 1240px;
+  --prose-w: 74ch;
+  --header-h: 60px;
+}

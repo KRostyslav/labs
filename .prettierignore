@@ -1,0 +1,6 @@
+dist/
+.astro/
+node_modules/
+package-lock.json
+# MDX-тексти форматуються вручну: Prettier може зламати формули й українські лапки
+*.mdx

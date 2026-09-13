@@ -1,0 +1,23 @@
+---
+/**
+ * Список контрольних запитань. MDX:
+ *   <ControlQuestions>
+ *     <Question q="Чому ВАХ діода нелінійна?">Підказка (необов'язково)…</Question>
+ *     <Question q="Що таке пробій p–n-переходу?" />
+ *   </ControlQuestions>
+ */
+---
+
+<ol class="questions"><slot /></ol>
+
+<style>
+  .questions {
+    max-width: var(--prose-w);
+    list-style: none;
+    counter-reset: q;
+    padding: 0;
+    margin: 1em 0;
+    display: grid;
+    gap: 10px;
+  }
+</style>

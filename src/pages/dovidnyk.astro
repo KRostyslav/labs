@@ -1,0 +1,18 @@
+---
+/**
+ * Загальний довідник: /dovidnyk/ — спільне для всіх робіт (сталі, одиниці, похибки, графіки, МНК).
+ * Текст — у src/reference/general.mdx.
+ */
+import ReferenceLayout from '@/layouts/ReferenceLayout.astro';
+import { mdxComponents } from '@/components/content';
+import { Content } from '@/reference/general.mdx';
+---
+
+<ReferenceLayout
+  title="Сталі, одиниці, похибки й графіки"
+  kicker="Загальний довідник"
+  backHref="/"
+  backText="На головну"
+>
+  <Content components={mdxComponents} />
+</ReferenceLayout>

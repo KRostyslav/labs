@@ -1,0 +1,48 @@
+---
+/**
+ * Іменована формула з поясненням позначень (для теорії й довідника). MDX:
+ *   <Formula name="Закон Ома для ділянки кола">
+ *   $$I = \frac{U}{R}$$
+ *   де $I$ — сила струму, А; $U$ — напруга, В; $R$ — опір, Ом.
+ *   </Formula>
+ * (Порожні рядки навколо $$…$$ обов'язкові, щоб формула відобразилась блоком.)
+ */
+interface Props {
+  name: string;
+}
+const { name } = Astro.props;
+---
+
+<figure class="formula">
+  <figcaption>{name}</figcaption>
+  <div class="formula__body"><slot /></div>
+</figure>
+
+<style>
+  .formula {
+    max-width: var(--prose-w);
+    margin: 1.2em 0;
+    padding: 10px 18px 6px;
+    background: #fffef9;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    background-image:
+      linear-gradient(var(--mm-minor) 1px, transparent 1px),
+      linear-gradient(90deg, var(--mm-minor) 1px, transparent 1px);
+    background-size: 8px 8px;
+  }
+  figcaption {
+    font-size: 0.74rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent-2);
+  }
+  .formula__body :global(p) {
+    margin: 0.4em 0;
+    font-size: 0.95rem;
+  }
+  .formula__body :global(.katex-display) {
+    margin: 0.5em 0;
+  }
+</style>

@@ -1,0 +1,24 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Сторінку не знайдено">
+  <div class="container nf">
+    <p class="nf__code">404</p>
+    <h1>Коло розірване</h1>
+    <p>Такої сторінки немає. Можливо, посилання застаріло.</p>
+    <a class="btn btn-primary" href="/">На головну</a>
+  </div>
+</BaseLayout>
+
+<style>
+  .nf {
+    padding-block: 80px;
+    text-align: center;
+  }
+  .nf__code {
+    font: 700 6rem/1 var(--font-display);
+    color: var(--accent);
+    margin: 0;
+  }
+</style>

@@ -1,0 +1,51 @@
+---
+/**
+ * Таблиця фізичних сталих (значення — з src/physics/constants.ts).
+ * MDX: <ConstantsTable keys={['e', 'k', 'kEv']} />   (без keys — усі)
+ */
+import { PHYS, thermalVoltage } from '@/physics/constants';
+import { formatNum, formatSci } from '@/core/format';
+
+const ROWS = {
+  e: { name: 'Елементарний заряд', sym: 'e', value: formatSci(PHYS.e, 4), unit: 'Кл' },
+  k: { name: 'Стала Больцмана', sym: 'k', value: formatSci(PHYS.k, 4), unit: 'Дж/К' },
+  kEv: { name: 'Стала Больцмана', sym: 'k', value: formatSci(PHYS.kEv, 4), unit: 'еВ/К' },
+  h: { name: 'Стала Планка', sym: 'h', value: formatSci(PHYS.h, 4), unit: 'Дж·с' },
+  c: { name: 'Швидкість світла у вакуумі', sym: 'c', value: formatSci(PHYS.c, 4), unit: 'м/с' },
+  hc: { name: 'Добуток сталої Планка на швидкість світла', sym: 'hc', value: formatNum(PHYS.hcEvNm, 6), unit: 'еВ·нм' },
+  UT: { name: 'Температурний потенціал при 300 К', sym: 'U_T = kT/e', value: formatNum(thermalVoltage(300) * 1e3, 3), unit: 'мВ' },
+  eV: { name: 'Електронвольт', sym: '1 еВ', value: formatSci(PHYS.e, 4), unit: 'Дж' },
+  T0: { name: 'Абсолютний нуль', sym: '0 К', value: '−273,15', unit: '°C' },
+} as const;
+
+type Key = keyof typeof ROWS;
+interface Props {
+  keys?: Key[];
+}
+const { keys = Object.keys(ROWS) as Key[] } = Astro.props;
+---
+
+<div class="table-scroll">
+  <table>
+    <thead>
+      <tr>
+        <th>Величина</th>
+        <th>Позначення</th>
+        <th class="num">Значення</th>
+        <th>Одиниця</th>
+      </tr>
+    </thead>
+    <tbody>
+      {
+        keys.map((k) => (
+          <tr>
+            <td>{ROWS[k].name}</td>
+            <td class="mono">{ROWS[k].sym}</td>
+            <td class="num">{ROWS[k].value}</td>
+            <td>{ROWS[k].unit}</td>
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+</div>

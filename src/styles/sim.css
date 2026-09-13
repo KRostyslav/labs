@@ -1,0 +1,704 @@
+/*
+ * Стилі UI-кіту симуляцій (src/components/sim, src/components/schematic).
+ * Класи мають префікс sim- / sch-, щоб не конфліктувати зі стилями тексту.
+ */
+
+/* ---------- Стенд: загальне компонування ---------- */
+.sim {
+  margin: 1.5em 0 2.5em;
+  display: grid;
+  gap: 16px;
+}
+.sim-bench {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+  grid-template-areas:
+    'schematic instruments'
+    'controls instruments';
+  align-items: start;
+}
+.sim-bench > [data-area='schematic'] {
+  grid-area: schematic;
+}
+.sim-bench > [data-area='instruments'] {
+  grid-area: instruments;
+}
+.sim-bench > [data-area='controls'] {
+  grid-area: controls;
+}
+.sim-work {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+  align-items: start;
+}
+@media (max-width: 900px) {
+  .sim-bench,
+  .sim-work {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: 'schematic' 'instruments' 'controls';
+  }
+}
+
+.sim-panel {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 14px 16px 16px;
+  min-width: 0;
+}
+.sim-panel--dark {
+  background:
+    radial-gradient(120% 90% at 20% 0%, var(--bakelite-2), var(--bakelite) 70%);
+  border-color: #15181c;
+  color: #e9e6dc;
+}
+.sim-panel__title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 0 0 10px;
+  /* Без text-transform: uppercase — він перетворює грецькі σ, μ на Σ, Μ */
+  font: 700 0.84rem/1.2 var(--font-body);
+  letter-spacing: 0.02em;
+  color: var(--ink-3);
+}
+.sim-panel--dark .sim-panel__title {
+  color: #a9a597;
+}
+.sim-panel__title::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  background: var(--accent);
+  margin-right: 8px;
+  flex: none;
+}
+.sim-panel__title span {
+  flex: 1;
+}
+
+.sim-instruments {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+}
+
+/* Смуга-тулбар стенду */
+.sim-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  align-items: center;
+}
+
+/* ---------- Стрілковий прилад ---------- */
+.sim-meter {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+}
+.sim-meter__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 0.8rem;
+  color: #cfcabb;
+}
+.sim-meter__head b {
+  font-family: var(--font-mono);
+  color: #fff;
+  font-weight: 600;
+}
+.sim-meter svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.35));
+}
+.sim-meter__needle {
+  transition: transform 0.7s cubic-bezier(0.25, 1.45, 0.45, 1);
+  transform-box: view-box;
+}
+.sim-meter__needle--pinned {
+  animation: sim-shiver 0.18s linear infinite alternate;
+}
+@keyframes sim-shiver {
+  to {
+    translate: 0.6px 0;
+  }
+}
+.sim-meter__readout {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: #d9d4c4;
+  min-height: 1.4em;
+}
+.sim-meter__readout b {
+  color: #fff;
+  font-weight: 600;
+}
+
+/* Перемикач меж */
+.sim-ranges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.sim-ranges button {
+  font: 600 0.74rem/1 var(--font-mono);
+  padding: 5px 7px;
+  border-radius: 5px;
+  border: 1px solid #555b64;
+  background: #2d3238;
+  color: #cfcabb;
+  cursor: pointer;
+}
+.sim-ranges button[aria-pressed='true'] {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+.sim-ranges button:hover:not([aria-pressed='true']) {
+  background: #3a4048;
+}
+
+/* ---------- Цифровий прилад ---------- */
+.sim-lcd {
+  position: relative;
+  border-radius: 8px;
+  padding: 10px 12px 8px;
+  background: linear-gradient(180deg, var(--lcd) 0%, var(--lcd-2) 100%);
+  box-shadow:
+    inset 0 2px 6px rgba(0, 0, 0, 0.35),
+    0 0 0 3px #111418,
+    0 0 0 4px #4a5059;
+  color: var(--lcd-ink);
+  font-family: var(--font-mono);
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  gap: 8px;
+  min-height: 64px;
+  overflow: hidden;
+}
+.sim-lcd__digits {
+  position: relative;
+  font-size: 2rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.sim-lcd__ghost {
+  position: absolute;
+  right: 0;
+  top: 0;
+  color: rgba(26, 35, 19, 0.09);
+}
+.sim-lcd__unit {
+  font-size: 0.95rem;
+  font-weight: 600;
+  padding-bottom: 2px;
+}
+.sim-lcd__flag {
+  position: absolute;
+  left: 10px;
+  top: 7px;
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  opacity: 0.75;
+}
+
+/* ---------- Органи керування ---------- */
+.sim-controls {
+  display: grid;
+  gap: 14px;
+}
+.sim-field {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+.sim-field__label {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--ink-2);
+}
+.sim-field__value {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  color: var(--ink);
+  background: var(--paper-2);
+  padding: 1px 8px;
+  border-radius: 5px;
+  white-space: nowrap;
+}
+.sim-field__hint {
+  font-size: 0.78rem;
+  color: var(--ink-3);
+}
+.sim-slider {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 8px;
+  align-items: center;
+}
+.sim-step {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1px solid var(--line-strong);
+  background: var(--card);
+  font: 700 1rem/1 var(--font-mono);
+  color: var(--ink-2);
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+}
+.sim-step:hover {
+  background: var(--paper-2);
+}
+.sim-step:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+input[type='range'].sim-range {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 26px;
+  background: transparent;
+  cursor: pointer;
+  --pct: 50%;
+}
+input[type='range'].sim-range::-webkit-slider-runnable-track {
+  height: 6px;
+  border-radius: 3px;
+  background: linear-gradient(90deg, var(--blue) var(--pct), var(--paper-2) var(--pct));
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+input[type='range'].sim-range::-moz-range-track {
+  height: 6px;
+  border-radius: 3px;
+  background: linear-gradient(90deg, var(--blue) var(--pct), var(--paper-2) var(--pct));
+}
+input[type='range'].sim-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 22px;
+  height: 22px;
+  margin-top: -8px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #fff, #d9d2c1 60%, #a79f8a);
+  border: 1px solid #857d69;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25);
+}
+input[type='range'].sim-range::-moz-range-thumb {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #fff, #d9d2c1 60%, #a79f8a);
+  border: 1px solid #857d69;
+}
+input[type='range'].sim-range:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* Сегментований перемикач */
+.sim-seg {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  padding: 3px;
+  background: var(--paper-2);
+  border-radius: 999px;
+  border: 1px solid var(--line);
+}
+.sim-seg button {
+  border: 0;
+  background: transparent;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font: 600 0.86rem/1.1 var(--font-body);
+  color: var(--ink-2);
+  cursor: pointer;
+}
+.sim-seg button[aria-pressed='true'] {
+  background: var(--card);
+  color: var(--ink);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.18);
+}
+.sim-seg button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* Тумблер */
+.sim-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--ink-2);
+  user-select: none;
+}
+.sim-toggle input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+.sim-toggle__track {
+  width: 46px;
+  height: 26px;
+  border-radius: 999px;
+  background: #9aa1aa;
+  position: relative;
+  transition: background 0.2s;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+.sim-toggle__track::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
+  transition: transform 0.2s;
+}
+.sim-toggle input:checked + .sim-toggle__track {
+  background: var(--ok);
+}
+.sim-toggle input:checked + .sim-toggle__track::after {
+  transform: translateX(20px);
+}
+.sim-toggle input:focus-visible + .sim-toggle__track {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+.sim-led {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #5a5f66;
+  display: inline-block;
+}
+.sim-led--on {
+  background: #ff6a2b;
+  box-shadow: 0 0 8px 2px rgba(255, 106, 43, 0.7);
+}
+
+/* Вкладки */
+.sim-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  border-bottom: 2px solid var(--line);
+}
+.sim-tabs button {
+  border: 0;
+  background: transparent;
+  padding: 10px 14px;
+  font: 700 0.92rem/1.2 var(--font-body);
+  color: var(--ink-3);
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  margin-bottom: -2px;
+}
+.sim-tabs button[aria-selected='true'] {
+  color: var(--ink);
+  border-bottom-color: var(--accent);
+}
+
+/* ---------- Запис виміру ---------- */
+.sim-record {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+.sim-record .btn-primary {
+  font-size: 1rem;
+  padding: 0.7em 1.3em;
+}
+.sim-record__msg {
+  font-size: 0.85rem;
+  color: var(--ink-3);
+}
+.sim-record__msg--ok {
+  color: var(--ok);
+  font-weight: 600;
+}
+.sim-record__msg--warn {
+  color: var(--danger);
+  font-weight: 600;
+}
+
+/* ---------- Стан елемента ---------- */
+.sim-status {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+.sim-status--ok {
+  background: var(--ok-soft);
+  color: var(--ok);
+}
+.sim-status--overload {
+  background: var(--warn-soft);
+  color: var(--warn);
+  animation: sim-pulse 1s ease-in-out infinite;
+}
+.sim-status--destroyed {
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+@keyframes sim-pulse {
+  50% {
+    box-shadow: 0 0 0 4px rgba(168, 112, 15, 0.18);
+  }
+}
+
+/* ---------- Таблиця вимірювань ---------- */
+.sim-table-wrap {
+  overflow-x: auto;
+  max-height: 420px;
+  overflow-y: auto;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background:
+    repeating-linear-gradient(180deg, transparent 0 35px, rgba(31, 78, 156, 0.07) 35px 36px),
+    var(--card);
+}
+.sim-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+.sim-table th {
+  position: sticky;
+  top: 0;
+  background: var(--paper-2);
+  font-weight: 700;
+  font-size: 0.82rem;
+  padding: 8px 10px;
+  text-align: right;
+  border-bottom: 2px solid var(--line-strong);
+  white-space: nowrap;
+  z-index: 1;
+}
+.sim-table th:first-child,
+.sim-table td:first-child {
+  text-align: center;
+  width: 2.5em;
+  color: var(--ink-3);
+}
+.sim-table th.sim-table__computed {
+  color: var(--blue);
+}
+.sim-table td {
+  padding: 0 10px;
+  height: 36px;
+  text-align: right;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.sim-table td.sim-table__computed {
+  color: var(--blue);
+}
+.sim-table td.sim-table__actions {
+  width: 2.5em;
+  text-align: center;
+}
+.sim-table tbody tr {
+  animation: sim-row-in 0.35s ease-out;
+}
+@keyframes sim-row-in {
+  from {
+    background: var(--accent-soft);
+  }
+}
+.sim-table__del {
+  border: 0;
+  background: transparent;
+  color: var(--ink-3);
+  cursor: pointer;
+  font-size: 1.1rem;
+  line-height: 1;
+  padding: 4px 6px;
+  border-radius: 4px;
+}
+.sim-table__del:hover {
+  color: var(--danger);
+  background: var(--danger-soft);
+}
+.sim-table__empty {
+  padding: 22px 12px;
+  text-align: center;
+  color: var(--ink-3);
+  font-size: 0.9rem;
+}
+.sim-table__legend {
+  font-size: 0.78rem;
+  color: var(--ink-3);
+}
+
+/* ---------- Графік ---------- */
+.sim-plot {
+  position: relative;
+}
+.sim-plot svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: #fffdf6;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-body);
+}
+.sim-plot__tip {
+  position: absolute;
+  pointer-events: none;
+  background: var(--ink);
+  color: #fff;
+  font: 600 0.78rem/1.3 var(--font-mono);
+  padding: 4px 8px;
+  border-radius: 5px;
+  transform: translate(-50%, calc(-100% - 10px));
+  white-space: nowrap;
+}
+.sim-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  margin-top: 8px;
+  font-size: 0.84rem;
+  color: var(--ink-2);
+}
+.sim-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.sim-legend i {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: inline-block;
+}
+.sim-legend i.sim-legend__line {
+  width: 18px;
+  height: 0;
+  border-radius: 0;
+  border-top: 2px dashed currentColor;
+}
+
+/* Результат МНК */
+.sim-fit {
+  margin-top: 10px;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  background: var(--blue-soft);
+  color: var(--blue-2);
+  font-size: 0.88rem;
+}
+.sim-fit b {
+  font-family: var(--font-mono);
+}
+
+/* ---------- Схема ---------- */
+.sch {
+  display: block;
+  width: 100%;
+  height: auto;
+  background:
+    linear-gradient(rgba(31, 78, 156, 0.06) 1px, transparent 1px) 0 0 / 10px 10px,
+    linear-gradient(90deg, rgba(31, 78, 156, 0.06) 1px, transparent 1px) 0 0 / 10px 10px,
+    #fffef9;
+  border-radius: var(--radius-sm);
+}
+.sch-line {
+  fill: none;
+  stroke: var(--blue-2);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.sch-thin {
+  fill: none;
+  stroke: var(--blue-2);
+  stroke-width: 1.4;
+}
+.sch-fill {
+  fill: var(--blue-2);
+}
+.sch-body {
+  fill: #fffef9;
+  stroke: var(--blue-2);
+  stroke-width: 2;
+}
+.sch-text {
+  fill: var(--blue-2);
+  font: 600 13px var(--font-body);
+}
+.sch-text--small {
+  font-size: 11px;
+}
+.sch-text--sym {
+  font: 700 14px var(--font-mono);
+}
+.sch-active .sch-body,
+.sch-active.sch-body {
+  fill: var(--accent-soft);
+}
+.sch-flow {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 2.2;
+  stroke-dasharray: 3 11;
+  stroke-linecap: round;
+  animation: sch-flow var(--flow-dur, 1s) linear infinite;
+}
+@keyframes sch-flow {
+  to {
+    stroke-dashoffset: -14;
+  }
+}
+/* Згорілий елемент: червоні контури й фон (перекриває кольори дочірніх елементів) */
+.sch-broken,
+.sch-broken .sch-line,
+.sch-broken .sch-thin,
+.sch-broken .sch-body {
+  stroke: var(--danger) !important;
+}
+.sch-broken .sch-body {
+  fill: var(--danger-soft) !important;
+}
+.sch-broken .sch-fill {
+  fill: var(--danger) !important;
+}

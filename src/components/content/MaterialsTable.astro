@@ -1,0 +1,100 @@
+---
+/**
+ * Таблиця властивостей матеріалів — дані беруться з src/physics/materials.ts
+ * (тими самими числами користуються симуляції).
+ *
+ * MDX: <MaterialsTable ids={['Si', 'Ge']} cols={['Eg', 'ni', 'mun', 'mup']} />
+ * Доступні стовпці: Eg, ni, mun, mup, rho, cutoff, eps, usage.
+ */
+import { MATERIALS, materialCutoff_nm, type MaterialId } from '@/physics/materials';
+import { conductivity } from '@/physics/sample';
+import { formatNum, formatSci } from '@/core/format';
+
+type Col = 'Eg' | 'ni' | 'mun' | 'mup' | 'rho' | 'cutoff' | 'eps' | 'usage';
+interface Props {
+  ids?: MaterialId[];
+  cols?: Col[];
+  caption?: string;
+}
+const {
+  ids = Object.keys(MATERIALS) as MaterialId[],
+  cols = ['Eg', 'ni', 'mun', 'mup', 'cutoff'],
+  caption,
+} = Astro.props;
+
+const HEAD: Record<Col, string> = {
+  Eg: 'E<sub>g</sub> (300&nbsp;К), еВ',
+  ni: 'n<sub>i</sub> (300&nbsp;К), см<sup>−3</sup>',
+  mun: 'μ<sub>n</sub>, см²/(В·с)',
+  mup: 'μ<sub>p</sub>, см²/(В·с)',
+  rho: 'ρ власного, Ом·м',
+  cutoff: 'λ<sub>ч</sub>, нм',
+  eps: 'ε',
+  usage: 'Де застосовують',
+};
+
+function cell(id: MaterialId, c: Col): string {
+  const m = MATERIALS[id];
+  switch (c) {
+    case 'Eg':
+      return formatNum(m.Eg300, 3);
+    case 'ni':
+      return m.ni300 ? formatSci(m.ni300 * 1e-6, 2) : '—';
+    case 'mun':
+      return formatNum(m.mun * 1e4, 3);
+    case 'mup':
+      return m.mup ? formatNum(m.mup * 1e4, 3) : '—';
+    case 'rho':
+      return m.ni300 && m.mup
+        ? formatNum(1 / conductivity({ material: m, type: 'i', doping_m3: 0 }, 300), 2)
+        : '—';
+    case 'cutoff':
+      return String(Math.round(materialCutoff_nm(m)));
+    case 'eps':
+      return m.eps ? formatNum(m.eps, 3) : '—';
+    case 'usage':
+      return m.usage;
+  }
+}
+---
+
+<div class="table-scroll">
+  <table>
+    {caption && <caption>{caption}</caption>}
+    <thead>
+      <tr>
+        <th>Матеріал</th>
+        {cols.map((c) => <th class={c === 'usage' ? '' : 'num'} set:html={HEAD[c]} />)}
+      </tr>
+    </thead>
+    <tbody>
+      {
+        ids.map((id) => (
+          <tr>
+            <td>
+              <b>{MATERIALS[id].name}</b> <span class="formula-id">{id}</span>
+            </td>
+            {cols.map((c) => (
+              <td class={c === 'usage' ? '' : 'num'}>{cell(id, c)}</td>
+            ))}
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+</div>
+
+<style>
+  .formula-id {
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+    color: var(--ink-3);
+  }
+  caption {
+    caption-side: bottom;
+    text-align: left;
+    font-size: 0.82rem;
+    color: var(--ink-3);
+    padding: 6px 2px;
+  }
+</style>

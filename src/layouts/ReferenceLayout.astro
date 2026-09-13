@@ -1,0 +1,97 @@
+---
+/**
+ * Макет сторінок довідника (довідник окремої лаби та загальний довідник).
+ * Має кнопку «Друкувати» — довідник зручно роздрукувати або зберегти в PDF.
+ */
+import BaseLayout from './BaseLayout.astro';
+
+interface Props {
+  title: string;
+  /** Надзаголовок: «Довідник до лабораторної роботи №3» */
+  kicker: string;
+  /** Посилання «назад» (на сторінку лаби або головну). */
+  backHref: string;
+  backText: string;
+}
+const { title, kicker, backHref, backText } = Astro.props;
+---
+
+<BaseLayout title={`${kicker}: ${title}`}>
+  <div class="container ref">
+    <div class="ref-top">
+      <a href={backHref} class="ref-back">← {backText}</a>
+      <button type="button" class="btn btn-sm" onclick="window.print()">🖨 Друкувати</button>
+    </div>
+    <header class="ref-head">
+      <p class="ref-kicker">{kicker}</p>
+      <h1>{title}</h1>
+    </header>
+    <article class="prose ref-body">
+      <slot />
+    </article>
+  </div>
+</BaseLayout>
+
+<style>
+  .ref {
+    max-width: 980px;
+    padding-top: 24px;
+  }
+  .ref-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+  }
+  .ref-back {
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .ref-head {
+    margin: 24px 0 8px;
+    padding: 24px 28px;
+    background: var(--blue);
+    color: #fff;
+    border-radius: var(--radius);
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.07) 1px, transparent 1px);
+    background-size: 16px 16px;
+  }
+  .ref-kicker {
+    margin: 0 0 6px;
+    font-size: 0.75rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: #c9d6ee;
+  }
+  .ref-head h1 {
+    margin: 0;
+    color: #fff;
+  }
+  .ref-body :global(h2) {
+    border-top: 1px dashed var(--line-strong);
+    padding-top: 1em;
+  }
+  @media print {
+    .ref-top,
+    :global(.site-header),
+    :global(.site-footer) {
+      display: none !important;
+    }
+    .ref-head {
+      background: none;
+      color: var(--ink);
+      padding: 0;
+    }
+    .ref-head h1,
+    .ref-kicker {
+      color: var(--ink);
+    }
+    :global(body) {
+      background: #fff;
+      font-size: 12pt;
+    }
+  }
+</style>

@@ -1,0 +1,128 @@
+/*
+ * Локальні стилі стенда лаби №4 (ефект Холла). Префікс hall-, щоб не конфліктувати зі спільним
+ * sim.css. Використовують ті самі змінні кольорів (tokens.css).
+ */
+
+/* Ілюстрація «вид згори» */
+.hall-view {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin-top: 10px;
+  background: #fffef9;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+}
+.hall-view-title {
+  margin: 14px 0 0;
+  font: 700 0.72rem/1 var(--font-body);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.hall-caption {
+  margin: 6px 0 0;
+  font-size: 0.84rem;
+  line-height: 1.45;
+  color: var(--ink-2);
+}
+
+/* Рух носіїв: зсув групи на один період (35 одиниць viewBox), нескінченно */
+.hall-carriers {
+  animation: hall-drift var(--hall-dur, 1.6s) linear infinite;
+}
+.hall-carriers--left {
+  animation-direction: reverse;
+}
+@keyframes hall-drift {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(35px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hall-carriers {
+    animation: none;
+  }
+}
+
+/* Легенда умовних знаків під схемою */
+.hall-legend {
+  margin: 8px 0 0;
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  background: var(--paper-2);
+  font-size: 0.8rem;
+  line-height: 1.45;
+  color: var(--ink-2);
+}
+.hall-legend b {
+  color: var(--ink);
+}
+
+/* Група органів керування з підзаголовком */
+.hall-group {
+  display: grid;
+  gap: 10px;
+  padding: 10px 12px 12px;
+  border: 1px dashed var(--line-strong);
+  border-radius: var(--radius-sm);
+}
+.hall-group__title {
+  margin: 0;
+  font: 700 0.72rem/1.2 var(--font-body);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+/* Незавершений рядок таблиці Холла */
+.hall-pending {
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--line);
+  background: var(--card);
+  font-size: 0.85rem;
+  line-height: 1.45;
+  color: var(--ink-3);
+}
+.hall-pending--active {
+  border: 2px solid var(--warn);
+  background: var(--warn-soft);
+  color: var(--ink);
+}
+.hall-pending__cells {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  margin: 4px 0;
+  font-family: var(--font-mono);
+  font-size: 0.84rem;
+}
+.hall-pending__cells span {
+  white-space: nowrap;
+}
+.hall-pending__cells .hall-ok {
+  color: var(--ok);
+  font-weight: 700;
+}
+.hall-pending__cells .hall-wait {
+  color: var(--warn);
+  font-weight: 700;
+}
+.hall-notice {
+  padding: 6px 10px;
+  border-radius: var(--radius-sm);
+  font-size: 0.84rem;
+  font-weight: 600;
+}
+.hall-notice--warn {
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+.hall-notice--ok {
+  background: var(--ok-soft);
+  color: var(--ok);
+}

@@ -1,0 +1,41 @@
+---
+/** Підвал сайту. */
+---
+
+<footer class="site-footer">
+  <div class="container site-footer__inner">
+    <p>
+      <b>Віртуальна лабораторія «Фізика напівпровідників»</b><br />
+      Навчальні симуляції для студентів технічних коледжів. Результати вимірювань зберігаються лише у
+      вашому браузері.
+    </p>
+    <p class="site-footer__links">
+      <a href="/#labs">Лабораторні роботи</a>
+      <a href="/dovidnyk/">Загальний довідник</a>
+    </p>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    margin-top: 80px;
+    border-top: 1px solid var(--line);
+    background: var(--paper-2);
+    font-size: 0.88rem;
+    color: var(--ink-3);
+  }
+  .site-footer__inner {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 16px;
+    padding-block: 28px;
+  }
+  .site-footer b {
+    color: var(--ink-2);
+  }
+  .site-footer__links {
+    display: flex;
+    gap: 16px;
+  }
+</style>

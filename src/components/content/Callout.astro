@@ -1,0 +1,59 @@
+---
+/**
+ * Виділений блок тексту. Не використовується в MDX напряму — через обгортки
+ * KeyIdea (головна думка), Note (зверніть увагу), Warning (увага / техніка безпеки).
+ */
+interface Props {
+  kind: 'idea' | 'note' | 'warning';
+  title?: string;
+}
+const { kind, title } = Astro.props;
+const defaults = { idea: 'Головна думка', note: 'Зверніть увагу', warning: 'Увага' };
+const icons = { idea: '💡', note: 'ℹ', warning: '⚠' };
+---
+
+<aside class={`callout callout--${kind}`}>
+  <p class="callout__title"><span aria-hidden="true">{icons[kind]}</span> {title ?? defaults[kind]}</p>
+  <div class="callout__body"><slot /></div>
+</aside>
+
+<style>
+  .callout {
+    max-width: var(--prose-w);
+    margin: 1.3em 0;
+    padding: 12px 18px;
+    border-radius: var(--radius-sm);
+    border: 1px solid;
+  }
+  .callout__title {
+    margin: 0 0 4px;
+    font-weight: 800;
+    font-size: 0.86rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .callout__body :global(p) {
+    margin: 0.35em 0;
+  }
+  .callout--idea {
+    background: var(--accent-soft);
+    border-color: #f1c2a8;
+  }
+  .callout--idea .callout__title {
+    color: var(--accent-2);
+  }
+  .callout--note {
+    background: var(--blue-soft);
+    border-color: #bccbe6;
+  }
+  .callout--note .callout__title {
+    color: var(--blue-2);
+  }
+  .callout--warning {
+    background: var(--danger-soft);
+    border-color: #eab5ad;
+  }
+  .callout--warning .callout__title {
+    color: var(--danger);
+  }
+</style>

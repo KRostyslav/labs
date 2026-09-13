@@ -1,0 +1,26 @@
+---
+/**
+ * Сторінка лабораторної роботи: /labs/<slug>/
+ * Генерується для кожного src/labs/NN-назва/index.mdx (крім draft: true).
+ */
+import { getCollection, render } from 'astro:content';
+import LabLayout from '@/layouts/LabLayout.astro';
+import { mdxComponents } from '@/components/content';
+
+export async function getStaticPaths() {
+  const labs = (await getCollection('labs', (e) => !e.data.draft)).sort(
+    (a, b) => a.data.number - b.data.number,
+  );
+  return labs.map((lab, i) => ({
+    params: { slug: lab.id },
+    props: { lab, prev: labs[i - 1], next: labs[i + 1] },
+  }));
+}
+
+const { lab, prev, next } = Astro.props;
+const { Content, headings } = await render(lab);
+---
+
+<LabLayout lab={lab} headings={headings} prev={prev} next={next}>
+  <Content components={mdxComponents} />
+</LabLayout>

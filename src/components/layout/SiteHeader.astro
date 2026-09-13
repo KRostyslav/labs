@@ -1,0 +1,117 @@
+---
+/** Шапка сайту: логотип (символ діода) і головна навігація. */
+const path = Astro.url.pathname;
+const isRef = path.startsWith('/dovidnyk');
+---
+
+<header class="site-header">
+  <div class="container site-header__inner">
+    <a class="brand" href="/" aria-label="Віртуальна лабораторія — на головну">
+      <svg class="brand__mark" viewBox="0 0 40 40" aria-hidden="true">
+        <rect width="40" height="40" rx="9" fill="var(--ink)"></rect>
+        <path d="M6 20h9M25 20h9" stroke="#f4f0e6" stroke-width="2.4" stroke-linecap="round"></path>
+        <path d="M15 12.5L25 20L15 27.5Z" fill="var(--accent)"></path>
+        <path d="M25 12v16" stroke="#f4f0e6" stroke-width="2.6" stroke-linecap="round"></path>
+      </svg>
+      <span class="brand__text">
+        <b>Віртуальна лабораторія</b>
+        <small>фізика напівпровідників</small>
+      </span>
+    </a>
+    <nav class="site-nav" aria-label="Головна навігація">
+      <a href="/#labs" aria-current={path === '/' ? 'page' : undefined}>Роботи</a>
+      <a href="/dovidnyk/" aria-current={isRef ? 'page' : undefined}
+        ><span class="nav-long">Загальний д</span><span class="nav-short">Д</span>овідник</a
+      >
+    </nav>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    height: var(--header-h);
+    background: color-mix(in srgb, var(--paper) 88%, transparent);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--line);
+  }
+  .site-header__inner {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: var(--ink);
+  }
+  .brand__mark {
+    width: 36px;
+    height: 36px;
+    flex: none;
+    transition: transform 0.3s ease;
+  }
+  .brand:hover .brand__mark {
+    transform: rotate(-8deg);
+  }
+  .brand__text {
+    display: grid;
+    line-height: 1.1;
+  }
+  .brand__text b {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+  .brand__text small {
+    color: var(--ink-3);
+    font-size: 0.78rem;
+  }
+  .site-nav {
+    display: flex;
+    gap: 4px;
+  }
+  .site-nav a {
+    padding: 6px 12px;
+    border-radius: 999px;
+    color: var(--ink-2);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.92rem;
+  }
+  .site-nav a:hover {
+    background: var(--paper-2);
+    color: var(--ink);
+  }
+  .site-nav a[aria-current='page'] {
+    background: var(--ink);
+    color: var(--paper);
+  }
+  .nav-short {
+    display: none;
+  }
+  @media (max-width: 560px) {
+    .nav-long {
+      display: none;
+    }
+    .nav-short {
+      display: inline;
+    }
+    .brand__text small {
+      display: none;
+    }
+    .brand__text b {
+      font-size: 0.8rem;
+    }
+    .site-nav a {
+      padding: 6px 8px;
+      font-size: 0.84rem;
+    }
+  }
+</style>

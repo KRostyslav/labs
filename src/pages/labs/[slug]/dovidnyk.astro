@@ -1,0 +1,30 @@
+---
+/**
+ * Довідник до лабораторної роботи: /labs/<slug>/dovidnyk/
+ * Вміст — src/labs/NN-назва/reference.mdx (slug у frontmatter має збігатися зі slug лаби).
+ */
+import { getCollection, render } from 'astro:content';
+import ReferenceLayout from '@/layouts/ReferenceLayout.astro';
+import { mdxComponents } from '@/components/content';
+
+export async function getStaticPaths() {
+  const labs = await getCollection('labs', (e) => !e.data.draft);
+  const refs = await getCollection('references');
+  return labs.flatMap((lab) => {
+    const ref = refs.find((r) => r.id === lab.id);
+    return ref ? [{ params: { slug: lab.id }, props: { lab, ref } }] : [];
+  });
+}
+
+const { lab, ref } = Astro.props;
+const { Content } = await render(ref);
+---
+
+<ReferenceLayout
+  title={ref.data.title}
+  kicker={`Довідник до лабораторної роботи №${lab.data.number}`}
+  backHref={`/labs/${lab.id}/`}
+  backText={`До роботи «${lab.data.shortTitle}»`}
+>
+  <Content components={mdxComponents} />
+</ReferenceLayout>

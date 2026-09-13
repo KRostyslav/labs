@@ -1,0 +1,9 @@
+---
+/** Попередження (перевантаження, техніка безпеки). MDX: <Warning>Не перевищуйте 50 мА.</Warning> */
+import Callout from './Callout.astro';
+interface Props {
+  title?: string;
+}
+---
+
+<Callout kind="warning" title={Astro.props.title}><slot /></Callout>

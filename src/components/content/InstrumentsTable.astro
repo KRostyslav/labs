@@ -1,0 +1,78 @@
+---
+/**
+ * Таблиця характеристик приладів — дані з src/core/instrumentCatalog.ts
+ * (ті самі, що використовує симуляція).
+ *
+ * MDX: <InstrumentsTable ids={['ANALOG_MILLIAMMETER', 'DMM_DCV']} />
+ */
+import * as CATALOG from '@/core/instrumentCatalog';
+import type { InstrumentSpec } from '@/core/instruments';
+import { formatNum } from '@/core/format';
+
+type Id = Exclude<keyof typeof CATALOG, 'LENGTH_TOOLS'>;
+interface Props {
+  ids: Id[];
+  /** Показати також засоби вимірювання довжини (лінійка, штангенциркуль, мікрометр). */
+  lengthTools?: boolean;
+}
+const { ids, lengthTools = false } = Astro.props;
+const specs = ids.map((id) => CATALOG[id] as InstrumentSpec);
+
+const ranges = (s: InstrumentSpec) =>
+  s.ranges
+    .map((r) => {
+      const d = s.kind === 'analog' ? ` (${r.divisions ?? 100} под.)` : '';
+      return `${formatNum(r.max, 4)} ${r.unit}${d}`;
+    })
+    .join('; ');
+const accuracy = (s: InstrumentSpec) =>
+  s.kind === 'analog'
+    ? `клас ${formatNum(s.accuracyClass, 2)}`
+    : `±(${formatNum(s.pctReading, 2)} % + ${s.digits} од.)`;
+const delta = (s: InstrumentSpec) =>
+  s.kind === 'analog'
+    ? 'Δ = клас · межа / 100'
+    : `Δ = ${formatNum(s.pctReading, 2)} % · показ + ${s.digits} · (од. молодшого розряду)`;
+---
+
+<div class="table-scroll">
+  <table>
+    <thead>
+      <tr>
+        <th>Прилад</th>
+        <th>Межі вимірювання</th>
+        <th>Точність</th>
+        <th>Абсолютна похибка</th>
+      </tr>
+    </thead>
+    <tbody>
+      {
+        specs.map((s) => (
+          <tr>
+            <td>
+              <b>{s.name}</b>
+              <br />
+              <small>{s.kind === 'analog' ? 'стрілковий' : 'цифровий'}</small>
+            </td>
+            <td>{ranges(s)}</td>
+            <td>{accuracy(s)}</td>
+            <td>{delta(s)}</td>
+          </tr>
+        ))
+      }
+      {
+        lengthTools &&
+          Object.values(CATALOG.LENGTH_TOOLS).map((t) => (
+            <tr>
+              <td>
+                <b>{t.name}</b>
+              </td>
+              <td>ціна поділки {formatNum(t.resolution_m * 1e3, 2)} мм</td>
+              <td>—</td>
+              <td>Δ = {formatNum(t.absError_m * 1e3, 2)} мм</td>
+            </tr>
+          ))
+      }
+    </tbody>
+  </table>
+</div>

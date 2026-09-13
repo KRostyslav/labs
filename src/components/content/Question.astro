@@ -1,0 +1,67 @@
+---
+/**
+ * Одне контрольне запитання (всередині <ControlQuestions>).
+ * Вміст між тегами (якщо є) — підказка, прихована під «Підказка».
+ */
+interface Props {
+  q: string;
+}
+const { q } = Astro.props;
+const hasHint = Astro.slots.has('default');
+---
+
+<li class="q">
+  <span class="q__text">{q}</span>
+  {
+    hasHint && (
+      <details class="q__hint">
+        <summary>Підказка</summary>
+        <div>
+          <slot />
+        </div>
+      </details>
+    )
+  }
+</li>
+
+<style>
+  .q {
+    counter-increment: q;
+    position: relative;
+    padding: 10px 14px 10px 52px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    color: var(--ink);
+    font-weight: 600;
+  }
+  .q::before {
+    content: counter(q);
+    position: absolute;
+    left: 12px;
+    top: 9px;
+    width: 28px;
+    height: 28px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: var(--ink);
+    color: var(--paper);
+    font: 700 0.85rem/1 var(--font-display);
+  }
+  .q__hint {
+    margin-top: 6px;
+    font-weight: 400;
+    color: var(--ink-2);
+    font-size: 0.94rem;
+  }
+  .q__hint summary {
+    cursor: pointer;
+    color: var(--blue);
+    font-weight: 600;
+    font-size: 0.85rem;
+  }
+  .q__hint :global(p) {
+    margin: 0.4em 0;
+  }
+</style>

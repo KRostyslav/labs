@@ -1,0 +1,360 @@
+---
+/**
+ * Макет сторінки лабораторної роботи.
+ *
+ * Автоматично виводить (з frontmatter index.mdx): шапку-«штамп» (як на кресленнях),
+ * розділи «Мета роботи» та «Обладнання», бічний зміст (з заголовків ## у MDX),
+ * посилання на Довідник і навігацію «попередня / наступна робота».
+ * Решта розділів (теорія, стенд, хід роботи…) — у самому index.mdx.
+ */
+import type { CollectionEntry } from 'astro:content';
+import type { MarkdownHeading } from 'astro';
+import BaseLayout from './BaseLayout.astro';
+import LabGlyph from '@/components/layout/LabGlyph.astro';
+
+interface Props {
+  lab: CollectionEntry<'labs'>;
+  headings: MarkdownHeading[];
+  prev?: CollectionEntry<'labs'>;
+  next?: CollectionEntry<'labs'>;
+}
+const { lab, headings, prev, next } = Astro.props;
+const d = lab.data;
+const num = String(d.number).padStart(2, '0');
+const toc = [{ slug: 'meta', text: 'Мета й обладнання' }, ...headings.filter((h) => h.depth === 2)];
+const refHref = `/labs/${lab.id}/dovidnyk/`;
+---
+
+<BaseLayout title={`ЛР №${d.number}. ${d.shortTitle}`} description={d.summary}>
+  <div class="container lab">
+    <header class="titleblock">
+      <div class="tb-cell tb-num">
+        <span class="tb-label">Лабораторна робота</span>
+        <span class="tb-numval">№&nbsp;{num}</span>
+      </div>
+      <div class="tb-cell tb-title">
+        <span class="tb-label">Тема</span>
+        <h1>{d.title}</h1>
+      </div>
+      <div class="tb-cell tb-glyph"><LabGlyph number={d.number} size={64} /></div>
+      <div class="tb-cell tb-dur">
+        <span class="tb-label">Тривалість</span>
+        <span>{d.durationMin} хв</span>
+      </div>
+      <div class="tb-cell tb-ref">
+        <a class="btn btn-blue" href={refHref}>📘 Довідник до роботи</a>
+      </div>
+    </header>
+
+    <div class="lab-grid">
+      <aside class="lab-toc" aria-label="Зміст роботи">
+        <nav>
+          <p class="lab-toc__title">Зміст</p>
+          <ol>
+            {
+              toc.map((h) => (
+                <li>
+                  <a href={`#${h.slug}`}>{h.text}</a>
+                </li>
+              ))
+            }
+          </ol>
+          <a class="lab-toc__ref" href={refHref}>Довідник →</a>
+        </nav>
+      </aside>
+
+      <article class="prose lab-body">
+        <section id="meta" class="lab-meta">
+          <div class="lab-meta__goal">
+            <h2>Мета роботи</h2>
+            <p>{d.goal}</p>
+          </div>
+          <div class="lab-meta__eq">
+            <h2>Обладнання</h2>
+            <ul>{d.equipment.map((e) => <li>{e}</li>)}</ul>
+            <p class="lab-meta__virtual">Усе обладнання — віртуальне: воно працює на стенді нижче.</p>
+          </div>
+        </section>
+
+        <slot />
+
+        <aside class="lab-refcard">
+          <div>
+            <p class="lab-refcard__kicker">Довідник</p>
+            <p>
+              Сталі, таблиці матеріалів, формули, характеристики приладів і словник термінів до цієї
+              роботи.
+            </p>
+          </div>
+          <a class="btn btn-blue" href={refHref}>Відкрити довідник</a>
+        </aside>
+
+        <nav class="lab-pager" aria-label="Інші роботи">
+          {
+            prev ? (
+              <a href={`/labs/${prev.id}/`} class="lab-pager__link">
+                <small>← Попередня</small>
+                <span>
+                  №{prev.data.number}. {prev.data.shortTitle}
+                </span>
+              </a>
+            ) : (
+              <span />
+            )
+          }
+          {
+            next && (
+              <a href={`/labs/${next.id}/`} class="lab-pager__link lab-pager__link--next">
+                <small>Наступна →</small>
+                <span>
+                  №{next.data.number}. {next.data.shortTitle}
+                </span>
+              </a>
+            )
+          }
+        </nav>
+      </article>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .lab {
+    padding-top: 28px;
+  }
+
+  /* ---- Шапка-«штамп» у стилі основного напису креслення ---- */
+  .titleblock {
+    display: grid;
+    grid-template-columns: 170px minmax(0, 1fr) 132px;
+    grid-template-rows: auto auto;
+    border: 2px solid var(--ink);
+    background: var(--card);
+    box-shadow: 6px 6px 0 var(--ink);
+    border-radius: 4px;
+    animation: tb-in 0.5s ease-out both;
+  }
+  @keyframes tb-in {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+  }
+  .tb-cell {
+    padding: 12px 16px;
+    border-right: 1px solid var(--ink);
+    border-bottom: 1px solid var(--ink);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 4px;
+    min-width: 0;
+  }
+  .tb-label {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
+  .tb-num {
+    grid-row: 1 / 3;
+    background: var(--ink);
+    color: var(--paper);
+    border-color: var(--ink);
+  }
+  .tb-num .tb-label {
+    color: #b9b4a6;
+  }
+  .tb-numval {
+    font-family: var(--font-display);
+    font-size: 2.4rem;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--accent);
+  }
+  .tb-title h1 {
+    margin: 0;
+    font-size: clamp(1.2rem, 2.4vw, 1.75rem);
+    line-height: 1.25;
+  }
+  .tb-glyph {
+    border-right: 0;
+    align-items: center;
+  }
+  .tb-dur {
+    border-bottom: 0;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    font-weight: 600;
+  }
+  .tb-ref {
+    grid-column: 3 / 4;
+    border: 0;
+    padding: 8px;
+    align-items: center;
+  }
+  .tb-ref .btn {
+    white-space: normal;
+    text-align: center;
+    font-size: 0.78rem;
+    padding: 0.5em 0.7em;
+    border-radius: 10px;
+  }
+  @media (max-width: 720px) {
+    .titleblock {
+      grid-template-columns: 1fr auto;
+      box-shadow: 4px 4px 0 var(--ink);
+    }
+    .tb-num {
+      grid-row: auto;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      grid-column: 1 / 3;
+    }
+    .tb-title {
+      grid-column: 1 / 2;
+    }
+    .tb-dur {
+      grid-column: 1 / 2;
+    }
+    .tb-ref {
+      grid-column: 2 / 3;
+    }
+  }
+
+  /* ---- Сітка: зміст + текст ---- */
+  .lab-grid {
+    display: grid;
+    grid-template-columns: 220px minmax(0, 1fr);
+    gap: 40px;
+    margin-top: 32px;
+  }
+  .lab-toc nav {
+    position: sticky;
+    top: calc(var(--header-h) + 20px);
+    font-size: 0.9rem;
+  }
+  .lab-toc__title {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    margin: 0 0 8px;
+  }
+  .lab-toc ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-left: 2px solid var(--line);
+  }
+  .lab-toc li a {
+    display: block;
+    padding: 5px 12px;
+    margin-left: -2px;
+    border-left: 2px solid transparent;
+    color: var(--ink-2);
+    text-decoration: none;
+    line-height: 1.35;
+  }
+  .lab-toc li a:hover {
+    border-left-color: var(--accent);
+    color: var(--ink);
+  }
+  .lab-toc__ref {
+    display: inline-block;
+    margin-top: 14px;
+    font-weight: 700;
+  }
+  @media (max-width: 980px) {
+    .lab-grid {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 0;
+    }
+    .lab-toc {
+      display: none;
+    }
+  }
+
+  .lab-body > :global(h2:first-of-type) {
+    margin-top: 0;
+  }
+  .lab-meta {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 16px 40px;
+  }
+  .lab-meta h2 {
+    margin-top: 0;
+  }
+  .lab-meta__goal p {
+    font-size: 1.08rem;
+    color: var(--ink);
+  }
+  .lab-meta__virtual {
+    font-size: 0.85rem;
+    color: var(--ink-3);
+  }
+  @media (max-width: 720px) {
+    .lab-meta {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  .lab-refcard {
+    margin-top: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    padding: 20px 24px;
+    border-radius: var(--radius);
+    background: var(--blue);
+    color: #e9eef8;
+  }
+  .lab-refcard p {
+    margin: 0;
+    color: #dbe4f3;
+    max-width: 52ch;
+  }
+  .lab-refcard .lab-refcard__kicker {
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    color: #fff;
+    margin-bottom: 4px;
+  }
+  .lab-refcard .btn {
+    --btn-bg: #fff;
+    --btn-fg: var(--blue-2);
+  }
+
+  .lab-pager {
+    margin-top: 28px;
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .lab-pager__link {
+    display: grid;
+    padding: 12px 16px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    background: var(--card);
+    text-decoration: none;
+    color: var(--ink);
+    font-weight: 600;
+    max-width: 48%;
+  }
+  .lab-pager__link small {
+    color: var(--ink-3);
+    font-weight: 500;
+  }
+  .lab-pager__link--next {
+    text-align: right;
+    margin-left: auto;
+  }
+</style>

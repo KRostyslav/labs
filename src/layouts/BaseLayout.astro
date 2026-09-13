@@ -1,0 +1,45 @@
+---
+/**
+ * Базовий макет сторінки: <head>, шрифти, стилі, шапка сайту, підвал.
+ * Використовується всіма сторінками (напряму або через LabLayout / ReferenceLayout).
+ */
+import '@fontsource-variable/unbounded';
+import '@fontsource-variable/onest';
+import '@fontsource-variable/jetbrains-mono';
+import 'katex/dist/katex.min.css';
+import '@/styles/tokens.css';
+import '@/styles/global.css';
+import '@/styles/sim.css';
+import SiteHeader from '@/components/layout/SiteHeader.astro';
+import SiteFooter from '@/components/layout/SiteFooter.astro';
+
+interface Props {
+  title: string;
+  description?: string;
+}
+const {
+  title,
+  description = 'Віртуальна лабораторія з фізики напівпровідників: інтерактивні лабораторні роботи для студентів технічних коледжів.',
+} = Astro.props;
+const fullTitle = title.includes('Віртуальна лабораторія') ? title : `${title} · Віртуальна лабораторія`;
+---
+
+<!doctype html>
+<html lang="uk">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#f4f0e6" />
+    <title>{fullTitle}</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Перейти до змісту</a>
+    <SiteHeader />
+    <main id="main">
+      <slot />
+    </main>
+    <SiteFooter />
+  </body>
+</html>
