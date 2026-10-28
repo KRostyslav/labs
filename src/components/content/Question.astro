@@ -2,12 +2,15 @@
 /**
  * Одне контрольне запитання (всередині <ControlQuestions>).
  * Вміст між тегами (якщо є) — підказка, прихована під «Підказка».
+ * Якщо SHOW_QUESTION_HINTS = false, підказка не рендериться зовсім (її немає в HTML).
  */
+import { SHOW_QUESTION_HINTS } from '@/site.config';
+
 interface Props {
   q: string;
 }
 const { q } = Astro.props;
-const hasHint = Astro.slots.has('default');
+const hasHint = SHOW_QUESTION_HINTS && Astro.slots.has('default');
 ---
 
 <li class="q">
